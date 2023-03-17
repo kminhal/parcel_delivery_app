@@ -1,0 +1,112 @@
+version: '3.8'
+services:
+
+  rabbitmq:
+    hostname: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    restart: always
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  eureka-server:
+    build: eureka-server
+    image: kminh/eureka-server
+    ports:
+      - "8761:8761"
+
+
+  api-gateway-service:
+    container_name: api-gateway-service
+    image: kminh/api-gateway
+    environment:
+      - eureka.client.serviceUrl.defaultZone = http://eureka-server:8761/eureka/
+    ports:
+      - "8765:8765"
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+
+  authdb:
+    container_name: auth_db
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: authdb
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+
+
+  auth-service:
+    container_name: auth-service
+    image: kminh/auth-ms
+    environment:
+      - eureka.client.serviceUrl.defaultZone = http://eureka-server:8761/eureka/
+      - spring.datasource.url = jdbc:postgresql://authdb:5432/authdb
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    depends_on:
+      - authdb
+      - eureka-server
+
+
+  orderdb:
+    container_name: order_db
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: orderdb
+    ports:
+      - "5434:5432"
+
+
+  order-service:
+    container_name: order-service
+    image: kminh/order-ms
+    environment:
+      - eureka.client.serviceUrl.defaultZone = http://eureka-server:8761/eureka/
+      - spring.datasource.url = jdbc:postgresql://orderdb:5432/orderdb
+      - spring_rabbitmq_host=rabbitmq
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    depends_on:
+      - orderdb
+      - eureka-server
+      - rabbitmq
+
+
+  deliverydb:
+    container_name: delivery_db
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: deliverydb
+    ports:
+      - "5435:5432"
+
+
+  delivery-service:
+    container_name: delivery-service
+    image: kminh/delivery-ms
+    environment:
+      - eureka.client.serviceUrl.defaultZone = http://eureka-server:8761/eureka/
+      - spring.datasource.url = jdbc:postgresql://deliverydb:5432/deliverydb
+      - spring_rabbitmq_host=rabbitmq
+
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+    depends_on:
+      - deliverydb
+      - eureka-server
+      - rabbitmq

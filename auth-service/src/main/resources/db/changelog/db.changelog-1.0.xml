@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="1.0" author="T am">
+
+        <!--CREATE roles TABLE-->
+        <createTable tableName="roles">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <!--CREATE users TABLE-->
+        <createTable tableName="users">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!--CREATE sers_roles TABLE-->
+        <createTable tableName="users_roles">
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             foreignKeyName="fk_users_roles_1"/>
+            </column>
+            <column name="role_id" type="bigint">
+                <constraints nullable="false"
+                             referencedTableName="roles"
+                             referencedColumnNames="id"
+                             foreignKeyName="fk_users_roles_2"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="user_id, role_id" tableName="users_roles"/>
+    </changeSet>
+
+</databaseChangeLog>

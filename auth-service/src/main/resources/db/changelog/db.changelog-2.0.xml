@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="2.0" author="I am">
+
+        <insert tableName="users">
+            <column name="username" value="user@user.com"/>
+            <column name="password" value="$2a$10$6Rcb6vbwsXxaLLvzKjmgROKXtjiZPOJ5RG2TR0FjDA5Ua5p9xlqT6"/>
+            <column name="first_name" value="user"/>
+            <column name="last_name" value="user"/>
+        </insert>
+        <insert tableName="users">
+            <column name="username" value="admin@admin.com"/>
+            <column name="password" value="$2a$10$6Rcb6vbwsXxaLLvzKjmgROKXtjiZPOJ5RG2TR0FjDA5Ua5p9xlqT6"/>
+            <column name="first_name" value="admin"/>
+            <column name="last_name" value="admin"/>
+        </insert>
+        <insert tableName="users">
+            <column name="username" value="courier@courier.com"/>
+            <column name="password" value="$2a$10$6Rcb6vbwsXxaLLvzKjmgROKXtjiZPOJ5RG2TR0FjDA5Ua5p9xlqT6"/>
+            <column name="first_name" value="courier"/>
+            <column name="last_name" value="courier"/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="name" value="ROLE_USER"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_COURIER"/>
+        </insert>
+
+        <insert tableName="users_roles">
+            <column name="user_id" value="1"/>
+            <column name="role_id" value="1"/>
+        </insert>
+        <insert tableName="users_roles">
+            <column name="user_id" value="2"/>
+            <column name="role_id" value="2"/>
+        </insert>
+        <insert tableName="users_roles">
+            <column name="user_id" value="3"/>
+            <column name="role_id" value="3"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
+
+
